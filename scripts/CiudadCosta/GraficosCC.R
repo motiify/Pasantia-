@@ -1,0 +1,106 @@
+# Cargar datos
+CiudadCosta <- read.table("datos procesados/Líneas de construcción_Ciudad de la Costa.csv",
+                      header = TRUE, sep = ",")
+str(CiudadCosta)
+View(CiudadCosta)
+
+# Creación de los gráficos.
+library(dplyr) # Calcular frecuencia
+library(ggplot2) # Gráficos 
+library(scales)
+
+# RÉGIMEN
+CiudadCosta_count_reg <- count(CiudadCosta, Código.régimen, name = "Freq.CR")
+View(CiudadCosta_count_reg)
+total_count_reg <- sum(CiudadCosta_count_reg$Freq.CR)
+CiudadCosta_count_reg$prop <- CiudadCosta_count_reg$Freq.CR / total_count_reg
+# Grafico
+graf1_reg <- ggplot(CiudadCosta_count_reg, aes(x = Código.régimen, y = prop)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = percent(prop)), vjust = -0.5,  size = 3) +
+  xlab("Régimen") + 
+  ylab("Porcentaje") +
+  scale_x_discrete(labels = c("PROP.COMÚN","PROP.HORIZONTAL","URBANIZACIÓN PH")) +
+  labs(title = "Ciudad de la Costa") +
+  theme_bw()
+graf2_reg <- graf1_reg + theme(plot.title = element_text(color = "black",
+                                                 hjust = 0.5, 
+                                                 size = 14, 
+                                                 lineheight = 1.2))
+graf2_reg #Visualizar gráfico
+
+
+# CATEGORIAS DE CONSTRUCCION
+# Calcular porcentaje
+CiudadCosta_count_CatCon <- count(CiudadCosta, Categoría.de.construcción, name = "Freq.CC")
+str(CiudadCosta_count_CatCon)
+total_count_CatCon <- sum(CiudadCosta_count_CatCon$Freq.CC)
+CiudadCosta_count_CatCon$prop <- CiudadCosta_count_CatCon$Freq.CC / total_count_CatCon
+
+# Ordenar las categorías
+View(CiudadCosta_count_CatCon)
+str(CiudadCosta_count_CatCon$Categoría.de.construcción)
+CiudadCosta_count_CatCon$Categoría.de.construcción <- factor(CiudadCosta_count_CatCon$Categoría.de.construcción,
+                                                         levels = c("NA","Muy economica", "Economica", "Comun", "Confortable", "Muy confortable"))
+CiudadCosta_count_CatCon <- CiudadCosta_count_CatCon[order(CiudadCosta_count_CatCon$Categoría.de.construcción),]
+
+
+#Gráfico
+graf1_CatCon <- ggplot(CiudadCosta_count_CatCon, aes(x = Categoría.de.construcción, y = prop)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = percent(prop)), vjust = -0.5, size = 3) +
+  xlab("Categorías de construcción") + 
+  ylab("Porcentaje") +
+  scale_x_discrete(labels = c("NA","Muy económica", "Económica", "Común", "Confortable", "Muy confortable")) + 
+  labs(title = "Ciudad de la Costa")+
+  theme_bw()
+
+graf2_CatCon <- graf1_CatCon + theme(plot.title = element_text(color = "black",
+                                        hjust = 0.5, 
+                                        size = 14, 
+                                        lineheight = 1.2))
+graf2_CatCon #Visualizar gráfico
+
+
+# DESTINOS
+# Calcular porcentaje
+CiudadCosta_count_Dest <- count(CiudadCosta, Destinos, name = "Freq.D")
+View(CiudadCosta_count__Dest)
+total_count_Dest <- sum(CiudadCosta_count_Dest$Freq.D)
+CiudadCosta_count_Dest$prop <- CiudadCosta_count_Dest$Freq.D / total_count_Dest
+CiudadCosta_countfilt_Dest <- CiudadCosta_count_Dest[CiudadCosta_count_Dest$Freq.D > 700,]
+
+etiquetas <- CiudadCosta_countfilt_Dest$Destinos
+etiquetas[8] <- "CUB-TECH-COB"
+etiquetas[17] <- "PLAYA ESTA"
+etiquetas
+
+graf1_Dest <- ggplot(CiudadCosta_countfilt_Dest, aes(x = Destinos, y = prop)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = percent(prop)), vjust = -0.5,  size = 3) +
+  xlab("Destinos") + 
+  ylab("Porcentaje") +
+  scale_x_discrete(labels = etiquetas) +
+  labs(title = "Ciudad de la Costa", caption = "Destinos con una frecuencia mayor a 700") +
+  theme_bw()
+graf2_Dest <- graf1_Dest + theme(axis.text = element_text(size=5),
+                       plot.title = element_text(color = "black",
+                                                 hjust = 0.5, 
+                                                 size = 14, 
+                                                 lineheight = 1.2))
+graf2_Dest #Visualizar gráfico
+
+
+# Exportando figuras
+
+ggsave(filename = "Regimen_CC.png", plot = graf2_reg, device = "png", 
+       path = "salidas/Figuras", width = 250, height = 150, units = "mm", 
+       dpi = 500, limitsize = TRUE)
+
+ggsave(filename = "Categoria_construccion_CC.png", plot = graf2_CatCon, device = "png", 
+       path = "salidas/Figuras", width = 250, height = 150, units = "mm", 
+       dpi = 500, limitsize = TRUE)
+
+ggsave(filename = "Destinos_CC.png", plot = graf2_Dest, device = "png", 
+       path = "salidas/Figuras", width = 300, height = 150, units = "mm", 
+       dpi = 500, limitsize = TRUE)
