@@ -1,5 +1,5 @@
 # Cargar datos
-LaBarra <- read.table("datos procesados/Líneas de construcción_La barra.csv",
+LaBarra <- read.table("datos procesados/Líneas de construcción_La barra2.csv",
                       header = TRUE, sep = ",", stringsAsFactors = TRUE)
 str(LaBarra)
 View(LaBarra)
@@ -33,13 +33,13 @@ graf2_reg #Visualizar gráfico
 # CATEGORIA DE CONSTRUCCION
 # Calcular porcentaje
 LaBarra_count_CatCon <- count(LaBarra, Categoría.de.construcción, name = "Freq.CC")
-str(LaBarra_count_CatCon)
+View(LaBarra_count_CatCon)
 total_count_CatCon <- sum(LaBarra_count_CatCon$Freq.CC)
 LaBarra_count_CatCon$prop <- LaBarra_count_CatCon$Freq.CC / total_count_CatCon
 
 # Ordenar las categorías
 LaBarra_count_CatCon$Categoría.de.construcción <- factor(LaBarra_count_CatCon$Categoría.de.construcción,
-                                                         levels = c("NA","Muy economica", "Economica", "Comun", "Confortable", "Muy confortable"))
+                                                         levels = c("Muy economica","4.5", "Economica","3.5", "Comun","2.5", "Confortable","1.5", "Muy confortable"))
 LaBarra_count_CatCon <- LaBarra_count_CatCon[order(LaBarra_count_CatCon$Categoría.de.construcción),]
 
 
@@ -49,7 +49,7 @@ graf1_CatCon <- ggplot(LaBarra_count_CatCon, aes(x = Categoría.de.construcción
   geom_text(aes(label = percent(prop)), vjust = -0.5,  size = 3) +
   xlab("Categorías de construcción") + 
   ylab("Porcentaje") +
-  scale_x_discrete(labels = c("NA","Muy económica", "Económica", "Común", "Confortable", "Muy confortable")) +
+  scale_x_discrete(labels = c("Muy economica","4.5", "Economica","3.5", "Comun","2.5", "Confortable","1.5", "Muy confortable")) +
   labs(title = "La Barra") +
   theme_bw()
 
@@ -88,6 +88,34 @@ graf2_Dest <- graf1_Dest + theme(axis.text = element_text(size=6),
                                                  lineheight = 1.2))
 graf2_Dest #Visualizar gráfico
 
+# ESTADOS DE CONSERVACIÓN
+# Calcular porcentaje
+LaBarra_count_Estado <- count(LaBarra, Estado.conservación, name = "Freq.Es")
+View(LaBarra_count_Estado)
+total_count_Estado <- sum(LaBarra_count_Estado$Freq.Es)
+LaBarra_count_Estado$prop <- LaBarra_count_Estado$Freq.Es / total_count_Estado
+
+# Ordenar las categorías
+LaBarra_count_Estado$Estado.conservación <- factor(LaBarra_count_Estado$Estado.conservación,
+                                                   levels = c("Excelente","Excelente/Bueno","Bueno","Bueno/Regular","Regular","Regular/Malo","Malo","Malo/Muy Malo" ,"Muy Malo","NA"))
+LaBarra_count_Estado <- LaBarra_count_Estado[order(LaBarra_count_Estado$Estado.conservación),]
+
+# Gráfico
+graf1_Estado <- ggplot(LaBarra_count_Estado, aes(x = Estado.conservación, y = prop)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = percent(prop)), vjust = -0.5,  size = 3) +
+  xlab("Estados de conservación") + 
+  ylab("Porcentaje") +
+  scale_x_discrete(labels = c("Excelente","Excelente/Bueno","Bueno","Bueno/Regular","Regular","Regular/Malo","Malo","Malo/Muy Malo" ,"Muy Malo","NA")) +
+  labs(title = "La Barra") +
+theme_bw()
+graf2_Estado <- graf1_Estado + theme(axis.text = element_text(size=8),
+                                 plot.title = element_text(color = "black",
+                                                           hjust = 0.5, 
+                                                           size = 14, 
+                                                           lineheight = 1.2))
+graf2_Estado #Visualizar gráfico
+
 
 # Exportando figuras
 
@@ -100,5 +128,8 @@ ggsave(filename = "Categoria_construccion_LB.png", plot = graf2_CatCon, device =
        dpi = 500, limitsize = TRUE)
 
 ggsave(filename = "Destinos_LB.png", plot = graf2_Dest, device = "png", 
+       path = "salidas/Figuras", width = 300, height = 150, units = "mm", 
+       dpi = 500, limitsize = TRUE)
+ggsave(filename = "Estados_conservacion_LB.png", plot = graf2_Estado, device = "png", 
        path = "salidas/Figuras", width = 300, height = 150, units = "mm", 
        dpi = 500, limitsize = TRUE)

@@ -1,5 +1,5 @@
 # Cargar datos
-CiudadCosta <- read.table("datos procesados/Líneas de construcción_Ciudad de la Costa.csv",
+CiudadCosta <- read.table("datos procesados/Líneas de construcción_Ciudad de la Costa2.csv",
                       header = TRUE, sep = ",")
 str(CiudadCosta)
 View(CiudadCosta)
@@ -33,7 +33,7 @@ graf2_reg #Visualizar gráfico
 # CATEGORIAS DE CONSTRUCCION
 # Calcular porcentaje
 CiudadCosta_count_CatCon <- count(CiudadCosta, Categoría.de.construcción, name = "Freq.CC")
-str(CiudadCosta_count_CatCon)
+View(CiudadCosta_count_CatCon)
 total_count_CatCon <- sum(CiudadCosta_count_CatCon$Freq.CC)
 CiudadCosta_count_CatCon$prop <- CiudadCosta_count_CatCon$Freq.CC / total_count_CatCon
 
@@ -41,7 +41,7 @@ CiudadCosta_count_CatCon$prop <- CiudadCosta_count_CatCon$Freq.CC / total_count_
 View(CiudadCosta_count_CatCon)
 str(CiudadCosta_count_CatCon$Categoría.de.construcción)
 CiudadCosta_count_CatCon$Categoría.de.construcción <- factor(CiudadCosta_count_CatCon$Categoría.de.construcción,
-                                                         levels = c("NA","Muy economica", "Economica", "Comun", "Confortable", "Muy confortable"))
+                                                         levels = c("Muy economica","4.5", "Economica","3.5", "Comun","2.5", "Confortable","1.5", "Muy confortable"))
 CiudadCosta_count_CatCon <- CiudadCosta_count_CatCon[order(CiudadCosta_count_CatCon$Categoría.de.construcción),]
 
 
@@ -51,7 +51,7 @@ graf1_CatCon <- ggplot(CiudadCosta_count_CatCon, aes(x = Categoría.de.construcc
   geom_text(aes(label = percent(prop)), vjust = -0.5, size = 3) +
   xlab("Categorías de construcción") + 
   ylab("Porcentaje") +
-  scale_x_discrete(labels = c("NA","Muy económica", "Económica", "Común", "Confortable", "Muy confortable")) + 
+  scale_x_discrete(labels = c("Muy economica","4.5", "Economica","3.5", "Comun","2.5", "Confortable","1.5", "Muy confortable")) + 
   labs(title = "Ciudad de la Costa")+
   theme_bw()
 
@@ -90,6 +90,33 @@ graf2_Dest <- graf1_Dest + theme(axis.text = element_text(size=5),
                                                  lineheight = 1.2))
 graf2_Dest #Visualizar gráfico
 
+# ESTADOS DE CONSERVACIÓN
+# Calcular porcentaje
+CiudadCosta_count_Estado <- count(CiudadCosta, Estado.conservación, name = "Freq.Es")
+View(CiudadCosta_count_Estado)
+total_count_Estado <- sum(CiudadCosta_count_Estado$Freq.Es)
+CiudadCosta_count_Estado$prop <- CiudadCosta_count_Estado$Freq.Es / total_count_Estado
+
+# Ordenar las categorías
+CiudadCosta_count_Estado$Estado.conservación <- factor(CiudadCosta_count_Estado$Estado.conservación,
+                                                   levels = c("Excelente","Excelente/Bueno","Bueno","Bueno/Regular","Regular","Regular/Malo","Malo","Malo/Muy Malo" ,"Muy Malo","NA"))
+CiudadCosta_count_Estado <- CiudadCosta_count_Estado[order(CiudadCosta_count_Estado$Estado.conservación),]
+
+# Gráfico
+graf1_Estado <- ggplot(CiudadCosta_count_Estado, aes(x = Estado.conservación, y = prop)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = percent(prop)), vjust = -0.5,  size = 3) +
+  xlab("Estados de conservación") + 
+  ylab("Porcentaje") +
+  scale_x_discrete(labels = c("Excelente","Excelente/Bueno","Bueno","Bueno/Regular","Regular","Regular/Malo","Malo","Malo/Muy Malo" ,"Muy Malo","NA")) +
+  labs(title = "Ciudad de la Costa") +
+  theme_bw()
+graf2_Estado <- graf1_Estado + theme(axis.text = element_text(size=8),
+                                     plot.title = element_text(color = "black",
+                                                               hjust = 0.5, 
+                                                               size = 14, 
+                                                               lineheight = 1.2))
+graf2_Estado #Visualizar gráfico
 
 # Exportando figuras
 
@@ -103,4 +130,7 @@ ggsave(filename = "Categoria_construccion_CC.png", plot = graf2_CatCon, device =
 
 ggsave(filename = "Destinos_CC.png", plot = graf2_Dest, device = "png", 
        path = "salidas/Figuras", width = 300, height = 150, units = "mm", 
+       dpi = 500, limitsize = TRUE)
+ggsave(filename = "Estado_conservacion_CC.png", plot = graf2_Estado, device = "png", 
+       path = "salidas/Figuras", width = 250, height = 150, units = "mm", 
        dpi = 500, limitsize = TRUE)

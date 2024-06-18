@@ -17,7 +17,7 @@ write.table(lc_canelones, file = "datos procesados/Líneas de construcción_Cane
 # library(data.table)
 # CiudadCosta <- data.table(lc_canelones[lc_canelones$V3 == "WA",])
 
-# esto soluciona el problema de los NA: 
+# esto soluciona el problema de los NA:
 CiudadCosta <- with(lc_canelones, lc_canelones[which(lc_canelones$V3 == "WA"),])
 
 
@@ -81,18 +81,18 @@ modifica <- function(dataframe, archivo, campo_clave, variable) {
 }
 str(CiudadCosta)
 str(LaBarra)
-CiudadCosta <- mod(CiudadCosta,"datos crudos/Destinos.csv", "Código destino", "Destinos")
-CiudadCosta <- mod(CiudadCosta,"datos procesados/Categorías de Construcción.csv", "Categoría construcción", "Categoría de construcción")
-CiudadCosta <- mod(CiudadCosta,"datos crudos/Estados de Conservación.csv", "Estado conservación", "Estado Conservación")
-CiudadCosta <- mod(CiudadCosta,"datos crudos/Cubiertas.csv", "Tipo de cubierta", "Tipo de cubierta")
-CiudadCosta <- mod(CiudadCosta,"datos crudos/Cielorrasos.csv", "Indicador cielorraso", "Indicador cielorraso")
-CiudadCosta <- mod(CiudadCosta,"datos crudos/Tipos de Obra.csv", "Tipo de obra", "Tipo de obra")
-LaBarra <- mod(LaBarra,"datos crudos/Destinos.csv", "Código destino", "Destinos")
-LaBarra <- mod(LaBarra,"datos procesados/Categorías de Construcción.csv", "Categoría construcción", "Categoría de construcción")
-LaBarra <- mod(LaBarra,"datos crudos/Estados de Conservación.csv", "Estado conservación","Estado conservación" )
-LaBarra <- mod(LaBarra,"datos crudos/Cubiertas.csv", "Tipo de cubierta","Tipo de cubierta")
-LaBarra <- mod(LaBarra,"datos crudos/Cielorrasos.csv", "Indicador cielorraso","Indicador cielorraso" )
-LaBarra <- mod(LaBarra,"datos crudos/Tipos de Obra.csv", "Tipo de obra","Tipo de obra" )
+CiudadCosta <- modifica(CiudadCosta,"datos crudos/Destinos.csv", "Código destino", "Destinos")
+CiudadCosta <- modifica(CiudadCosta,"datos procesados/Categorías de Construcción.csv", "Categoría construcción", "Categoría de construcción")
+CiudadCosta <- modifica(CiudadCosta,"datos crudos/Estados de Conservación.csv", "Estado conservación", "Estado conservación")
+CiudadCosta <- modifica(CiudadCosta,"datos crudos/Cubiertas.csv", "Tipo de cubierta", "Tipo de cubierta")
+CiudadCosta <- modifica(CiudadCosta,"datos crudos/Cielorrasos.csv", "Indicador cielorraso", "Indicador cielorraso")
+CiudadCosta <- modifica(CiudadCosta,"datos crudos/Tipos de Obra.csv", "Tipo de obra", "Tipo de obra")
+LaBarra <- modifica(LaBarra,"datos crudos/Destinos.csv", "Código destino", "Destinos")
+LaBarra <- modifica(LaBarra,"datos procesados/Categorías de Construcción.csv", "Categoría construcción", "Categoría de construcción")
+LaBarra <- modifica(LaBarra,"datos crudos/Estados de Conservación.csv", "Estado conservación","Estado conservación" )
+LaBarra <- modifica(LaBarra,"datos crudos/Cubiertas.csv", "Tipo de cubierta","Tipo de cubierta")
+LaBarra <- modifica(LaBarra,"datos crudos/Cielorrasos.csv", "Indicador cielorraso","Indicador cielorraso" )
+LaBarra <- modifica(LaBarra,"datos crudos/Tipos de Obra.csv", "Tipo de obra","Tipo de obra" )
 
 View(LaBarra)
 View(CiudadCosta)
