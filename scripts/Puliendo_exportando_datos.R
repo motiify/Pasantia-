@@ -81,6 +81,7 @@ modifica <- function(dataframe, archivo, campo_clave, variable) {
 }
 str(CiudadCosta)
 str(LaBarra)
+<<<<<<< HEAD
 CiudadCosta <- modifica(CiudadCosta,"datos crudos/Destinos.csv", "Código destino", "Destinos")
 CiudadCosta <- modifica(CiudadCosta,"datos procesados/Categorías de Construcción.csv", "Categoría construcción", "Categoría de construcción")
 CiudadCosta <- modifica(CiudadCosta,"datos crudos/Estados de Conservación.csv", "Estado conservación", "Estado conservación")
@@ -93,6 +94,20 @@ LaBarra <- modifica(LaBarra,"datos crudos/Estados de Conservación.csv", "Estado
 LaBarra <- modifica(LaBarra,"datos crudos/Cubiertas.csv", "Tipo de cubierta","Tipo de cubierta")
 LaBarra <- modifica(LaBarra,"datos crudos/Cielorrasos.csv", "Indicador cielorraso","Indicador cielorraso" )
 LaBarra <- modifica(LaBarra,"datos crudos/Tipos de Obra.csv", "Tipo de obra","Tipo de obra" )
+=======
+CiudadCosta <- mod(CiudadCosta,"datos crudos/Destinos.csv", "Código destino", "Destinos")
+CiudadCosta <- mod(CiudadCosta,"datos procesados/Categorías de Construcción.csv", "Categoría construcción", "Categoría de construcción")
+CiudadCosta <- mod(CiudadCosta,"datos crudos/Estados de Conservación.csv", "Estado conservación", "Estado Conservación")
+CiudadCosta <- mod(CiudadCosta,"datos crudos/Cubiertas.csv", "Tipo de cubierta", "Tipo de cubierta")
+CiudadCosta <- mod(CiudadCosta,"datos crudos/Cielorrasos.csv", "Indicador cielorraso", "Indicador cielorraso")
+CiudadCosta <- mod(CiudadCosta,"datos crudos/Tipos de Obra.csv", "Tipo de obra", "Tipo de obra")
+LaBarra <- mod(LaBarra,"datos crudos/Destinos.csv", "Código destino", "Destinos")
+LaBarra <- mod(LaBarra,"datos procesados/Categorías de Construcción.csv", "Categoría construcción", "Categoría de construcción")
+LaBarra <- mod(LaBarra,"datos crudos/Estados de Conservación.csv", "Estado conservación","Estado conservación" )
+LaBarra <- mod(LaBarra,"datos crudos/Cubiertas.csv", "Tipo de cubierta","Tipo de cubierta")
+LaBarra <- mod(LaBarra,"datos crudos/Cielorrasos.csv", "Indicador cielorraso","Indicador cielorraso" )
+LaBarra <- mod(LaBarra,"datos crudos/Tipos de Obra.csv", "Tipo de obra","Tipo de obra" )
+>>>>>>> fe122de5616da626744ac1fad540f2d0dfa65c6f
 
 View(LaBarra)
 View(CiudadCosta)
