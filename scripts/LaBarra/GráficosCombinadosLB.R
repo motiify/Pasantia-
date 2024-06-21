@@ -12,6 +12,22 @@ library(patchwork) #combinar distintos gráficos
 LaBarra <- read.table("datos procesados/Líneas de construcción_La barra2.csv",
                       header = TRUE, sep = ",")
 
+# Area construida por Destino
+LaBarra_Dest_area <- aggregate(Area.construida ~ Destinos , data = LaBarra, FUN = sum)
+sum(LaBarra_Dest_area$Area.construida) # Suma: 339868
+LaBarra_Dest_area$Porcentaje_AreaTotal <- LaBarra_Dest_area$Area.construida*100
+LaBarra_Dest_area$Porcentaje_AreaTotal <- LaBarra_Dest_area$Area.construida/339868
+LaBarra_Dest_area$Porcentaje_AreaTotal <- percent(LaBarra_Dest_area$Porcentaje_AreaTotal)
+LaBarra_Dest_area_mod <- LaBarra_Dest_area[LaBarra_Dest_area$Porcentaje_AreaTotal > 1,]
+
+# Gráfico
+graf_Dest <- ggplot(LaBarra_Dest_area_mod, aes(x = Destinos, y = Area.construida)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = Porcentaje_AreaTotal), vjust = -0.5,  size = 2) +
+  xlab("Destinos") + 
+  ylab(bquote("Área construida"~(m^2))) +
+  labs(caption = "Porcentajes > 1% del Área total  /  Área total: 339.868" ~ m^2)
+graf_Dest
 
 # Area construida por categoria de construccion
 LaBarra_CatCon_area <- aggregate(Area.construida ~ Categoría.de.construcción , data = LaBarra, FUN = sum)
@@ -76,23 +92,8 @@ graf_Reg <- ggplot(LaBarra_Reg_area, aes(x = Código.régimen, y = Area.construi
   labs(caption = "Área total: 339.868" ~ m^2)+
   scale_x_discrete(labels = c("PROP.COMÚN","PROP.HORIZONTAL","URBANIZACIÓN PH"))
   
-
-
-# graf_comb <- ((graf_Estado | graf_CatCon) / graf_Reg) + plot_annotation(
-#   title = 'La Barra',
-#   theme = theme(plot.title = element_text(size = 14, hjust = 0.5))) & 
-#   theme(axis.text.x = element_text(size = 5.5),
-#                 axis.text.y=element_text(angle = 90, vjust = 1, hjust = 0.5, size = 6.5),
-#                 axis.title.x = element_text(size = 8),
-#                 axis.title.y = element_text(size = 8),
-#                 plot.title = element_text(color = "black",
-#                                           hjust = 0.5, 
-#                                           size = 14, 
-#                                           lineheight = 1.2))
-# graf_comb
-
-fil2 <- (plot_spacer() | graf_Reg | plot_spacer()) + plot_layout(widths = c(0.2,0.6,0.20))
 fil1 <- (graf_Estado | graf_CatCon) + plot_layout(heights = c(1,1))
+fil2 <- (graf_Reg | graf_Dest) + plot_layout(widths = c(1,1))
 
 graf_comb <- (fil1 / fil2) + plot_annotation(title = 'La Barra') & 
   theme(axis.text.x = element_text(size = 5.5),
