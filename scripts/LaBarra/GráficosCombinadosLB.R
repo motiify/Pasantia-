@@ -1,0 +1,109 @@
+## Múltiples gráficos en una misma figura. Precentar el porcentaje que representa
+## cada categoría del área total construida.
+
+# Paquetes utilizados
+library(dplyr)
+library(ggplot2)
+library(scales) #función percent.
+library(patchwork) #combinar distintos gráficos
+
+
+# Datos
+LaBarra <- read.table("datos procesados/Líneas de construcción_La barra2.csv",
+                      header = TRUE, sep = ",")
+
+
+# Area construida por categoria de construccion
+LaBarra_CatCon_area <- aggregate(Area.construida ~ Categoría.de.construcción , data = LaBarra, FUN = sum)
+sum(LaBarra_CatCon_area$Area.construida) # Suma: 339868
+LaBarra_CatCon_area$Porcentaje_AreaTotal <- LaBarra_CatCon_area$Area.construida*100
+LaBarra_CatCon_area$Porcentaje_AreaTotal <- LaBarra_CatCon_area$Area.construida/339868
+LaBarra_CatCon_area$Porcentaje_AreaTotal <- percent(LaBarra_CatCon_area$Porcentaje_AreaTotal)
+
+
+# Ordenar
+LaBarra_CatCon_area$Categoría.de.construcción <- factor(LaBarra_CatCon_area$Categoría.de.construcción,
+                                                         levels = c("Muy economica","4.5", "Economica","3.5", "Comun","2.5", "Confortable","1.5", "Muy confortable"))
+LaBarra_CatCon_area <- LaBarra_CatCon_area[order(LaBarra_CatCon_area$Categoría.de.construcción),]
+
+# Gráfico
+graf_CatCon <- ggplot(LaBarra_CatCon_area, aes(x = Categoría.de.construcción, y = Area.construida)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = Porcentaje_AreaTotal), vjust = -0.5,  size = 2) +
+  xlab("Categoría de construcción") + 
+  ylab(bquote("Área construida"~(m^2))) +
+  labs(caption = "Área total: 339.868" ~ m^2)+
+  scale_x_discrete(labels = c("Muy economica","4.5", "Economica","3.5", "Comun","2.5", "Confortable","1.5", "Muy confortable"))
+
+
+# Area construida por estado de conservacion
+LaBarra_Estado_area <- aggregate(Area.construida ~ Estado.conservación , data = LaBarra, FUN = sum)
+sum(LaBarra_Estado_area$Area.construida) # Suma: 322667
+LaBarra_Estado_area$Porcentaje_AreaTotal <- LaBarra_Estado_area$Area.construida*100
+LaBarra_Estado_area$Porcentaje_AreaTotal <- LaBarra_Estado_area$Area.construida/322667
+LaBarra_Estado_area$Porcentaje_AreaTotal <- percent(LaBarra_Estado_area$Porcentaje_AreaTotal)
+
+# Ordenar
+LaBarra_Estado_area$Estado.conservación <- factor(LaBarra_Estado_area$Estado.conservación,
+                                                   levels = c("Excelente","Excelente/Bueno","Bueno","Bueno/Regular","Regular","Regular/Malo","Malo","Malo/Muy Malo" ,"Muy Malo","NA"))
+LaBarra_Estado_area <- LaBarra_Estado_area[order(LaBarra_Estado_area$Estado.conservación),]
+
+# Grafico
+graf_Estado <- ggplot(LaBarra_Estado_area, aes(x = Estado.conservación, y = Area.construida)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = Porcentaje_AreaTotal), vjust = -0.5,  size = 2) +
+  xlab("Estado de conservación") + 
+  ylab(bquote("Área construida"~(m^2))) +
+  labs(caption = "Área total: 322.667" ~ m^2)+
+  scale_x_discrete(labels = c("Excelente","Excelente/Bueno","Bueno",
+                              "Bueno/Regular","Regular","Regular/Malo","Malo",
+                              "Malo/Muy Malo" ,"Muy Malo","NA")) +
+  scale_y_continuous(breaks = seq(from = 0, to = 128000, by = 25000))
+
+# RÉGIMEN
+LaBarra_Reg_area <- aggregate(Area.construida ~ Código.régimen , data = LaBarra, FUN = sum)
+sum(LaBarra_Reg_area$Area.construida) # Suma: 339868
+LaBarra_Reg_area$Porcentaje_AreaTotal <- LaBarra_Reg_area$Area.construida*100
+LaBarra_Reg_area$Porcentaje_AreaTotal <- LaBarra_Reg_area$Area.construida/339868
+LaBarra_Reg_area$Porcentaje_AreaTotal <- percent(LaBarra_Reg_area$Porcentaje_AreaTotal)
+
+# Gráfico
+graf_Reg <- ggplot(LaBarra_Reg_area, aes(x = Código.régimen, y = Area.construida)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = Porcentaje_AreaTotal), vjust = -0.5,  size = 2) + 
+  xlab("Régimen") + 
+  ylab(bquote("Área construida"~(m^2))) +
+  labs(caption = "Área total: 339.868" ~ m^2)+
+  scale_x_discrete(labels = c("PROP.COMÚN","PROP.HORIZONTAL","URBANIZACIÓN PH"))
+  
+
+
+# graf_comb <- ((graf_Estado | graf_CatCon) / graf_Reg) + plot_annotation(
+#   title = 'La Barra',
+#   theme = theme(plot.title = element_text(size = 14, hjust = 0.5))) & 
+#   theme(axis.text.x = element_text(size = 5.5),
+#                 axis.text.y=element_text(angle = 90, vjust = 1, hjust = 0.5, size = 6.5),
+#                 axis.title.x = element_text(size = 8),
+#                 axis.title.y = element_text(size = 8),
+#                 plot.title = element_text(color = "black",
+#                                           hjust = 0.5, 
+#                                           size = 14, 
+#                                           lineheight = 1.2))
+# graf_comb
+
+fil2 <- (plot_spacer() | graf_Reg | plot_spacer()) + plot_layout(widths = c(0.2,0.6,0.20))
+fil1 <- (graf_Estado | graf_CatCon) + plot_layout(heights = c(1,1))
+
+graf_comb <- (fil1 / fil2) + plot_annotation(title = 'La Barra') & 
+  theme(axis.text.x = element_text(size = 5.5),
+        axis.text.y=element_text(angle = 90, vjust = 1, hjust = 0.5, size = 6.5),
+        axis.title.x = element_text(size = 8),
+        axis.title.y = element_text(size = 8),
+        plot.title = element_text(color = "black",
+                                  hjust = 0.5, 
+                                  size = 14, 
+                                  lineheight = 1.2))
+graf_comb
+ggsave(filename = "LaBarra_GrafCombinados.png", plot = graf_comb, device = "png", 
+       path = "salidas/Figuras/Combinadas", width = 250, height = 150, units = "mm", 
+       dpi = 500, limitsize = TRUE)

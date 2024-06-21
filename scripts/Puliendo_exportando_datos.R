@@ -61,20 +61,10 @@ write.table(CatCot, file = "datos procesados/Categorías de Construcción.csv",
 
 library(dplyr)
 modifica <- function(dataframe, archivo, campo_clave, variable) {
-  # Cargar datos del archivo CSV
   datos <- read.table(archivo, sep = ",", header = FALSE, stringsAsFactors = FALSE)
-  
-  # Asignar nombres a las columnas
   names(datos) <- c("Clave", "Valor")
-  
-  # Unir los datos
   dataframe <- left_join(dataframe, datos, by= setNames("Clave", campo_clave))
-  
-  #Eliminar el campo clave
   dataframe <- select(dataframe, -all_of(campo_clave))
-  
-  
-  # Cambiar el nombre de la columna Valor
   names(dataframe)[names(dataframe) == "Valor"] <- variable
   
   return(dataframe)
