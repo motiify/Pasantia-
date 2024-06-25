@@ -41,7 +41,7 @@ CatCon_COPH <- ggplot(CatCon_CO_PH, aes(x = Categoría.de.construcción, y = Are
   ylab("Área construida")+
   xlab("Categoría de construcción")
 
-CatCon_COPH
+
 
 # Area construida por Estado de conservación
 CiudadCosta_Estado_area_CO <- aggregate(Area.construida ~ Estado.conservación , data = CiudadCosta_CO, FUN = sum)
@@ -70,7 +70,7 @@ Estado_COPH <- ggplot(Estado_CO_PH, aes(x = Estado.conservación, y = Area.const
   ylab("Área construida")+
   xlab("Estado de conservación")
 
-Estado_COPH
+
 
 # Area construida por Destinos
 CiudadCosta_Destino_area_CO <- aggregate(Area.construida ~ Destinos , data = CiudadCosta_CO, FUN = sum)
@@ -87,14 +87,13 @@ CiudadCosta_Destino_area_PH$Porcentaje_AreaTotal <- percent(CiudadCosta_Destino_
 
 Destino_CO_PH <- rbind(CiudadCosta_Destino_area_CO,CiudadCosta_Destino_area_PH)
 Destino_CO_PH_mod <- Destino_CO_PH[Destino_CO_PH$Porcentaje_AreaTotal > 1,]
-
+View(Destino_CO_PH_mod)
 Destino_COPH <- ggplot(Destino_CO_PH_mod, aes(x = Destinos, y = Area.construida, fill = Regimen)) + 
   geom_bar(stat = "identity")+    #crear un gráfico de barras apiladas para múltiples variables
   ylab("Área construida")+
   xlab("Destino de conservación")+
   scale_y_continuous(breaks = seq(from = 0, to = 3600000, by = 600000))
 
-Destino_COPH
 
 
 
@@ -105,7 +104,7 @@ grafico <- Estado_COPH + CatCon_COPH + Destino_COPH + guide_area() + plot_layout
 
 graf_comb <- grafico  + plot_annotation(title = "Ciudad de la Costa", subtitle = "Área construida vs. Régimen") & 
   theme(axis.text.x = element_text(size = 3.5),
-        axis.text.y=element_text(angle = 90, vjust = 1, hjust = 0.5, size = 6.5),
+        axis.text.y=element_text(angle = 90, vjust = 1, hjust = 0.5, size = 3.5),
         axis.title.x = element_text(size = 8),
         axis.title.y = element_text(size = 8),
         plot.title = element_text(color = "black",

@@ -16,6 +16,31 @@ PadUrb_LB <- read.table("datos procesados/Padrones Urbanos_LaBarra.csv",
                         header = TRUE, sep = ",")
 
 PadUrb_LB$DeclaraciónJurada <- ifelse(PadUrb_LB$`Fecha.última.DJCU` == "/  /", "No", "Si")
+table(PadUrb_LB$DeclaraciónJurada,PadUrb_LB$Código.Régimen)
+View(PadUrb_LB)
+
+# No   Si 
+# 612 2062
+# Total de padrones: 2674 
+
+#     CO  PH  UH
+# No 506 106   0
+# Si 989 637 436
+
+
+
+
+
+
+DJCU <- ggplot(PadUrb_LB, aes(x = DeclaraciónJurada, y = Area.construida, fill = Código.Régimen)) + 
+  geom_bar(stat = "identity")+    #crear un gráfico de barras apiladas para múltiples variables
+  ylab("area construida")+
+  xlab("Destino de conservación")
+
+
+
+
+
 PadUrb_LB_filt <- PadUrb_LB[,c(4,16)]
 
 PadUrb_LB_mod <- inner_join(LaBarra, PadUrb_LB_filt, by = "Padrón")

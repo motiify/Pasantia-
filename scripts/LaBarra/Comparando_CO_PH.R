@@ -37,11 +37,10 @@ LaBarra_CatCon_area_PH <- LaBarra_CatCon_area_PH[order(LaBarra_CatCon_area_PH$Ca
 CatCon_CO_PH <- rbind(LaBarra_CatCon_area_CO,LaBarra_CatCon_area_PH)
 
 CatCon_COPH <- ggplot(CatCon_CO_PH, aes(x = Categoría.de.construcción, y = Area.construida, fill = Regimen)) + 
-  geom_bar(stat = "identity")+    #crear un gráfico de barras apiladas para múltiples variables
-  ylab("area construida")+
+  geom_bar(stat = "identity",position = "dodge")+    #crear un gráfico de barras apiladas para múltiples variables
+  ylab("Área construida")+
   xlab("Categoría de construcción")
 
-CatCon_COPH
 
 # Area construida por Estado de conservación
 LaBarra_Estado_area_CO <- aggregate(Area.construida ~ Estado.conservación , data = LaBarra_CO, FUN = sum)
@@ -66,11 +65,10 @@ LaBarra_Estado_area_PH <- LaBarra_Estado_area_PH[order(LaBarra_Estado_area_PH$Es
 Estado_CO_PH <- rbind(LaBarra_Estado_area_CO,LaBarra_Estado_area_PH)
 
 Estado_COPH <- ggplot(Estado_CO_PH, aes(x = Estado.conservación, y = Area.construida, fill = Regimen)) + 
-  geom_bar(stat = "identity")+    #crear un gráfico de barras apiladas para múltiples variables
-  ylab("area construida")+
+  geom_bar(stat = "identity",position = "dodge")+    #crear un gráfico de barras apiladas para múltiples variables
+  ylab("Área construida")+
   xlab("Estado de conservación")
 
-Estado_COPH
 
 # Area construida por Destinos
 LaBarra_Destino_area_CO <- aggregate(Area.construida ~ Destinos , data = LaBarra_CO, FUN = sum)
@@ -89,12 +87,11 @@ Destino_CO_PH <- rbind(LaBarra_Destino_area_CO,LaBarra_Destino_area_PH)
 Destino_CO_PH_mod <- Destino_CO_PH[Destino_CO_PH$Porcentaje_AreaTotal > 1,]
 
 Destino_COPH <- ggplot(Destino_CO_PH_mod, aes(x = Destinos, y = Area.construida, fill = Regimen)) + 
-  geom_bar(stat = "identity")+    #crear un gráfico de barras apiladas para múltiples variables
-  ylab("area construida")+
+  geom_bar(stat = "identity",position = "dodge")+    #crear un gráfico de barras apiladas para múltiples variables
+  ylab("Área construida")+
   xlab("Destino de conservación")
 
 Destino_COPH
-
 
 
 # fil1 <- (Estado_COPH | CatCon_COPH) + plot_layout(widths = c(1,1))
