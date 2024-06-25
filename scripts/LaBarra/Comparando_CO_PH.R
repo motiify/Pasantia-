@@ -38,7 +38,7 @@ CatCon_CO_PH <- rbind(LaBarra_CatCon_area_CO,LaBarra_CatCon_area_PH)
 
 CatCon_COPH <- ggplot(CatCon_CO_PH, aes(x = Categoría.de.construcción, y = Area.construida, fill = Regimen)) + 
   geom_bar(stat = "identity")+    #crear un gráfico de barras apiladas para múltiples variables
-  ylab("area construida")+
+  ylab("Área construida")+
   xlab("Categoría de construcción")
 
 CatCon_COPH
@@ -67,7 +67,7 @@ Estado_CO_PH <- rbind(LaBarra_Estado_area_CO,LaBarra_Estado_area_PH)
 
 Estado_COPH <- ggplot(Estado_CO_PH, aes(x = Estado.conservación, y = Area.construida, fill = Regimen)) + 
   geom_bar(stat = "identity")+    #crear un gráfico de barras apiladas para múltiples variables
-  ylab("area construida")+
+  ylab("Área construida")+
   xlab("Estado de conservación")
 
 Estado_COPH
@@ -90,7 +90,7 @@ Destino_CO_PH_mod <- Destino_CO_PH[Destino_CO_PH$Porcentaje_AreaTotal > 1,]
 
 Destino_COPH <- ggplot(Destino_CO_PH_mod, aes(x = Destinos, y = Area.construida, fill = Regimen)) + 
   geom_bar(stat = "identity")+    #crear un gráfico de barras apiladas para múltiples variables
-  ylab("area construida")+
+  ylab("Área construida")+
   xlab("Destino de conservación")
 
 Destino_COPH

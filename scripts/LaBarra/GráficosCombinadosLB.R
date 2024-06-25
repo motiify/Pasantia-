@@ -51,6 +51,30 @@ graf_CatCon <- ggplot(LaBarra_CatCon_area, aes(x = Categoría.de.construcción, 
   labs(caption = "Área total: 339.868" ~ m^2)+
   scale_x_discrete(labels = c("Muy economica","4.5", "Economica","3.5", "Comun","2.5", "Confortable","1.5", "Muy confortable"))
 
+# Area construida por estado de destinos
+LaBarra_Destino_area <- aggregate(Area.construida ~ Destinos , data = LaBarra, FUN = sum)
+
+LaBarra_Estado_area$Porcentaje_AreaTotal <- LaBarra_Estado_area$Area.construida*100
+LaBarra_Estado_area$Porcentaje_AreaTotal <- LaBarra_Estado_area$Area.construida/sum(LaBarra_Destinos_area$Area.construida)
+LaBarra_Estado_area$Porcentaje_AreaTotal <- percent(LaBarra_Estado_area$Porcentaje_AreaTotal)
+
+# Ordenar
+LaBarra_Estado_area$Estado.conservación <- factor(LaBarra_Estado_area$Estado.conservación,
+                                                  levels = c("Excelente","Excelente/Bueno","Bueno","Bueno/Regular","Regular","Regular/Malo","Malo","Malo/Muy Malo" ,"Muy Malo","NA"))
+LaBarra_Estado_area <- LaBarra_Estado_area[order(LaBarra_Estado_area$Estado.conservación),]
+
+# Grafico
+graf_Estado <- ggplot(LaBarra_Estado_area, aes(x = Estado.conservación, y = Area.construida)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = Porcentaje_AreaTotal), vjust = -0.5,  size = 2) +
+  xlab("Estado de conservación") + 
+  ylab(bquote("Área construida"~(m^2))) +
+  labs(caption = "Área total: 322.667" ~ m^2)+
+  scale_x_discrete(labels = c("Excelente","Excelente/Bueno","Bueno",
+                              "Bueno/Regular","Regular","Regular/Malo","Malo",
+                              "Malo/Muy Malo" ,"Muy Malo","NA")) +
+  scale_y_continuous(breaks = seq(from = 0, to = 128000, by = 25000))
+
 
 # Area construida por estado de conservacion
 LaBarra_Estado_area <- aggregate(Area.construida ~ Estado.conservación , data = LaBarra, FUN = sum)
