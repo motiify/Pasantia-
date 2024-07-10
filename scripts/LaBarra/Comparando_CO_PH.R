@@ -38,6 +38,7 @@ CatCon_CO_PH <- rbind(LaBarra_CatCon_area_CO,LaBarra_CatCon_area_PH)
 
 CatCon_COPH <- ggplot(CatCon_CO_PH, aes(x = Categoría.de.construcción, y = Area.construida, fill = Regimen)) + 
   geom_bar(stat = "identity",position = "dodge")+    #crear un gráfico de barras apiladas para múltiples variables
+  geom_bar(stat = "identity")+    #crear un gráfico de barras apiladas para múltiples variables
   ylab("Área construida")+
   xlab("Categoría de construcción")
 
@@ -66,6 +67,7 @@ Estado_CO_PH <- rbind(LaBarra_Estado_area_CO,LaBarra_Estado_area_PH)
 
 Estado_COPH <- ggplot(Estado_CO_PH, aes(x = Estado.conservación, y = Area.construida, fill = Regimen)) + 
   geom_bar(stat = "identity",position = "dodge")+    #crear un gráfico de barras apiladas para múltiples variables
+  geom_bar(stat = "identity")+    #crear un gráfico de barras apiladas para múltiples variables
   ylab("Área construida")+
   xlab("Estado de conservación")
 
@@ -88,6 +90,7 @@ Destino_CO_PH_mod <- Destino_CO_PH[Destino_CO_PH$Porcentaje_AreaTotal > 1,]
 
 Destino_COPH <- ggplot(Destino_CO_PH_mod, aes(x = Destinos, y = Area.construida, fill = Regimen)) + 
   geom_bar(stat = "identity",position = "dodge")+    #crear un gráfico de barras apiladas para múltiples variables
+  geom_bar(stat = "identity")+    #crear un gráfico de barras apiladas para múltiples variables
   ylab("Área construida")+
   xlab("Destino de conservación")
 
@@ -113,6 +116,6 @@ graf_comb <- grafico  + plot_annotation(title = "La Barra", subtitle = "Área co
                                   lineheight = 1.2))
 graf_comb
 
-ggsave(filename = "LaBarra_Regimen_COvsPH.png", plot = graf_comb, device = "png", 
+ggsave(filename = "LaBarra_COvsPH.png", plot = graf_comb, device = "png", 
        path = "salidas/Figuras/Combinadas", width = 250, height = 150, units = "mm", 
        dpi = 500, limitsize = TRUE)

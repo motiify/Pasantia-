@@ -11,9 +11,8 @@ LaBarra <- read.table("datos procesados/Líneas de construcción_La barra2.csv",
 
 # Area construida por Destino
 LaBarra_Dest_area <- aggregate(Area.construida ~ Destinos , data = LaBarra, FUN = sum)
-sum(LaBarra_Dest_area$Area.construida) # Suma: 339868
 LaBarra_Dest_area$Porcentaje_AreaTotal <- LaBarra_Dest_area$Area.construida*100
-LaBarra_Dest_area$Porcentaje_AreaTotal <- LaBarra_Dest_area$Area.construida/339868
+LaBarra_Dest_area$Porcentaje_AreaTotal <- LaBarra_Dest_area$Area.construida/sum(LaBarra_Dest_area$Area.construida)
 LaBarra_Dest_area$Porcentaje_AreaTotal <- percent(LaBarra_Dest_area$Porcentaje_AreaTotal)
 LaBarra_Dest_area_mod <- LaBarra_Dest_area[LaBarra_Dest_area$Porcentaje_AreaTotal > 1,]
 
@@ -24,19 +23,18 @@ graf_Dest <- ggplot(LaBarra_Dest_area_mod, aes(x = Destinos, y = Area.construida
   xlab("Destinos") + 
   ylab(bquote("Área construida"~(m^2))) +
   labs(caption = "Porcentajes > 1% del Área total  /  Área total: 339.868" ~ m^2)
-graf_Dest
 
-# Area construida por categoria de construccion
+
+# Area construida por Categoria de construccion
 LaBarra_CatCon_area <- aggregate(Area.construida ~ Categoría.de.construcción , data = LaBarra, FUN = sum)
-sum(LaBarra_CatCon_area$Area.construida) # Suma: 339868
 LaBarra_CatCon_area$Porcentaje_AreaTotal <- LaBarra_CatCon_area$Area.construida*100
-LaBarra_CatCon_area$Porcentaje_AreaTotal <- LaBarra_CatCon_area$Area.construida/339868
+LaBarra_CatCon_area$Porcentaje_AreaTotal <- LaBarra_CatCon_area$Area.construida/sum(LaBarra_CatCon_area$Area.construida)
 LaBarra_CatCon_area$Porcentaje_AreaTotal <- percent(LaBarra_CatCon_area$Porcentaje_AreaTotal)
 
 
 # Ordenar
 LaBarra_CatCon_area$Categoría.de.construcción <- factor(LaBarra_CatCon_area$Categoría.de.construcción,
-                                                         levels = c("Muy economica","4.5", "Economica","3.5", "Comun","2.5", "Confortable","1.5", "Muy confortable"))
+                                                         levels = c("Muy confortable","1.5","Confortable","2.5","Comun","3.5","Economica","4.5","Muy economica"))
 LaBarra_CatCon_area <- LaBarra_CatCon_area[order(LaBarra_CatCon_area$Categoría.de.construcción),]
 
 # Gráfico
@@ -46,38 +44,13 @@ graf_CatCon <- ggplot(LaBarra_CatCon_area, aes(x = Categoría.de.construcción, 
   xlab("Categoría de construcción") + 
   ylab(bquote("Área construida"~(m^2))) +
   labs(caption = "Área total: 339.868" ~ m^2)+
-  scale_x_discrete(labels = c("Muy economica","4.5", "Economica","3.5", "Comun","2.5", "Confortable","1.5", "Muy confortable"))
-
-# Area construida por estado de destinos
-LaBarra_Destino_area <- aggregate(Area.construida ~ Destinos , data = LaBarra, FUN = sum)
-
-LaBarra_Estado_area$Porcentaje_AreaTotal <- LaBarra_Estado_area$Area.construida*100
-LaBarra_Estado_area$Porcentaje_AreaTotal <- LaBarra_Estado_area$Area.construida/sum(LaBarra_Destinos_area$Area.construida)
-LaBarra_Estado_area$Porcentaje_AreaTotal <- percent(LaBarra_Estado_area$Porcentaje_AreaTotal)
-
-# Ordenar
-LaBarra_Estado_area$Estado.conservación <- factor(LaBarra_Estado_area$Estado.conservación,
-                                                  levels = c("Excelente","Excelente/Bueno","Bueno","Bueno/Regular","Regular","Regular/Malo","Malo","Malo/Muy Malo" ,"Muy Malo","NA"))
-LaBarra_Estado_area <- LaBarra_Estado_area[order(LaBarra_Estado_area$Estado.conservación),]
-
-# Grafico
-graf_Estado <- ggplot(LaBarra_Estado_area, aes(x = Estado.conservación, y = Area.construida)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(label = Porcentaje_AreaTotal), vjust = -0.5,  size = 2) +
-  xlab("Estado de conservación") + 
-  ylab(bquote("Área construida"~(m^2))) +
-  labs(caption = "Área total: 322.667" ~ m^2)+
-  scale_x_discrete(labels = c("Excelente","Excelente/Bueno","Bueno",
-                              "Bueno/Regular","Regular","Regular/Malo","Malo",
-                              "Malo/Muy Malo" ,"Muy Malo","NA")) +
-  scale_y_continuous(breaks = seq(from = 0, to = 128000, by = 25000))
+  scale_x_discrete(labels = c("Muy confortable","1.5","Confortable","2.5","Comun","3.5","Economica","4.5","Muy economica"))
 
 
-# Area construida por estado de conservacion
+# Area construida por Estado de conservacion
 LaBarra_Estado_area <- aggregate(Area.construida ~ Estado.conservación , data = LaBarra, FUN = sum)
-sum(LaBarra_Estado_area$Area.construida) # Suma: 322667
 LaBarra_Estado_area$Porcentaje_AreaTotal <- LaBarra_Estado_area$Area.construida*100
-LaBarra_Estado_area$Porcentaje_AreaTotal <- LaBarra_Estado_area$Area.construida/322667
+LaBarra_Estado_area$Porcentaje_AreaTotal <- LaBarra_Estado_area$Area.construida/sum(LaBarra_Estado_area$Area.construida)
 LaBarra_Estado_area$Porcentaje_AreaTotal <- percent(LaBarra_Estado_area$Porcentaje_AreaTotal)
 
 # Ordenar
@@ -97,11 +70,10 @@ graf_Estado <- ggplot(LaBarra_Estado_area, aes(x = Estado.conservación, y = Are
                               "Malo/Muy Malo" ,"Muy Malo","NA")) +
   scale_y_continuous(breaks = seq(from = 0, to = 128000, by = 25000))
 
-# RÉGIMEN
+# Area construida por Régimen
 LaBarra_Reg_area <- aggregate(Area.construida ~ Código.régimen , data = LaBarra, FUN = sum)
-sum(LaBarra_Reg_area$Area.construida) # Suma: 339868
 LaBarra_Reg_area$Porcentaje_AreaTotal <- LaBarra_Reg_area$Area.construida*100
-LaBarra_Reg_area$Porcentaje_AreaTotal <- LaBarra_Reg_area$Area.construida/339868
+LaBarra_Reg_area$Porcentaje_AreaTotal <- LaBarra_Reg_area$Area.construida/sum(LaBarra_Reg_area$Area.construida)
 LaBarra_Reg_area$Porcentaje_AreaTotal <- percent(LaBarra_Reg_area$Porcentaje_AreaTotal)
 
 # Gráfico
@@ -130,6 +102,6 @@ graf_comb <- (fil1 / fil2) + plot_annotation(title = 'La Barra') &
                                   size = 14, 
                                   lineheight = 1.2))
 graf_comb
-ggsave(filename = "LaBarra_GrafCombinados.png", plot = graf_comb, device = "png", 
-       path = "salidas/Figuras/Combinadas", width = 250, height = 150, units = "mm", 
+ggsave(filename = "LaBarra_Area.png", plot = graf_comb, device = "png", 
+       path = "salidas/Figuras/Básicas", width = 250, height = 150, units = "mm", 
        dpi = 500, limitsize = TRUE)

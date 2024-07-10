@@ -117,6 +117,6 @@ graf_comb <- grafico  + plot_annotation(title = "Ciudad de la Costa", subtitle =
                                      lineheight = 1.2))
 graf_comb
 
-ggsave(filename = "CiudadCosta_Regimen_COvsPH.png", plot = graf_comb, device = "png", 
+ggsave(filename = "CiudadCosta_COvsPH.png", plot = graf_comb, device = "png", 
        path = "salidas/Figuras/Combinadas", width = 250, height = 150, units = "mm", 
        dpi = 500, limitsize = TRUE)
