@@ -11,7 +11,6 @@ CiudadCosta <- read.table("datos procesados/Líneas de construcción_Ciudad de l
 CiudadCosta_CO <- CiudadCosta[CiudadCosta$Código.régimen == "CO",]
 CiudadCosta_PH <- CiudadCosta[CiudadCosta$Código.régimen == "PH",]
 
-View(CiudadCosta_PH)
 
 
 # Area construida por categoria de construccion
@@ -21,7 +20,7 @@ CiudadCosta_CatCon_area_CO$Porcentaje_AreaTotal <- CiudadCosta_CatCon_area_CO$Ar
 CiudadCosta_CatCon_area_CO$Porcentaje_AreaTotal <- CiudadCosta_CatCon_area_CO$Area.construida/sum(CiudadCosta_CatCon_area_CO$Area.construida)
 CiudadCosta_CatCon_area_CO$Porcentaje_AreaTotal <- percent(CiudadCosta_CatCon_area_CO$Porcentaje_AreaTotal)
 CiudadCosta_CatCon_area_CO$Categoría.de.construcción <- factor(CiudadCosta_CatCon_area_CO$Categoría.de.construcción,
-                                                           levels = c("Muy economica","4.5", "Economica","3.5", "Comun","2.5", "Confortable","1.5", "Muy confortable"))
+                                                           levels = c("Muy confortable","1.5","Confortable","2.5","Comun","3.5","Economica","4.5","Muy economica"))
 CiudadCosta_CatCon_area_CO <- CiudadCosta_CatCon_area_CO[order(CiudadCosta_CatCon_area_CO$Categoría.de.construcción),]
 
 
@@ -31,13 +30,13 @@ CiudadCosta_CatCon_area_PH$Porcentaje_AreaTotal <- CiudadCosta_CatCon_area_PH$Ar
 CiudadCosta_CatCon_area_PH$Porcentaje_AreaTotal <- CiudadCosta_CatCon_area_PH$Area.construida/sum(CiudadCosta_CatCon_area_PH$Area.construida)
 CiudadCosta_CatCon_area_PH$Porcentaje_AreaTotal <- percent(CiudadCosta_CatCon_area_PH$Porcentaje_AreaTotal)
 CiudadCosta_CatCon_area_PH$Categoría.de.construcción <- factor(CiudadCosta_CatCon_area_PH$Categoría.de.construcción,
-                                                           levels = c("Muy economica","4.5", "Economica","3.5", "Comun","2.5", "Confortable","1.5", "Muy confortable"))
+                                                           levels = c("Muy confortable","1.5","Confortable","2.5","Comun","3.5","Economica","4.5","Muy economica"))
 CiudadCosta_CatCon_area_PH <- CiudadCosta_CatCon_area_PH[order(CiudadCosta_CatCon_area_PH$Categoría.de.construcción),]
 
 CatCon_CO_PH <- rbind(CiudadCosta_CatCon_area_CO,CiudadCosta_CatCon_area_PH)
 
 CatCon_COPH <- ggplot(CatCon_CO_PH, aes(x = Categoría.de.construcción, y = Area.construida, fill = Regimen)) + 
-  geom_bar(stat = "identity")+    #crear un gráfico de barras apiladas para múltiples variables
+  geom_bar(stat = "identity",position = "dodge")+    #crear un gráfico de barras apiladas para múltiples variables
   ylab("Área construida")+
   xlab("Categoría de construcción")
 
@@ -66,7 +65,7 @@ CiudadCosta_Estado_area_PH <- CiudadCosta_Estado_area_PH[order(CiudadCosta_Estad
 Estado_CO_PH <- rbind(CiudadCosta_Estado_area_CO,CiudadCosta_Estado_area_PH)
 
 Estado_COPH <- ggplot(Estado_CO_PH, aes(x = Estado.conservación, y = Area.construida, fill = Regimen)) + 
-  geom_bar(stat = "identity")+    #crear un gráfico de barras apiladas para múltiples variables
+  geom_bar(stat = "identity", position = "dodge")+    #crear un gráfico de barras apiladas para múltiples variables
   ylab("Área construida")+
   xlab("Estado de conservación")
 
@@ -89,10 +88,15 @@ Destino_CO_PH <- rbind(CiudadCosta_Destino_area_CO,CiudadCosta_Destino_area_PH)
 Destino_CO_PH_mod <- Destino_CO_PH[Destino_CO_PH$Porcentaje_AreaTotal > 1,]
 View(Destino_CO_PH_mod)
 Destino_COPH <- ggplot(Destino_CO_PH_mod, aes(x = Destinos, y = Area.construida, fill = Regimen)) + 
-  geom_bar(stat = "identity")+    #crear un gráfico de barras apiladas para múltiples variables
+  geom_bar(stat = "identity", position = "dodge")+    #crear un gráfico de barras apiladas para múltiples variables
   ylab("Área construida")+
   xlab("Destino de conservación")+
-  scale_y_continuous(breaks = seq(from = 0, to = 3600000, by = 600000))
+  scale_y_continuous(breaks = seq(from = 0, to = 3600000, by = 600000))+
+  theme(axis.text = element_text(size=5),
+        plot.title = element_text(color = "black",
+                                  hjust = 0.5, 
+                                  size = 14, 
+                                  lineheight = 1.2))
 
 
 
@@ -118,5 +122,20 @@ graf_comb <- grafico  + plot_annotation(title = "Ciudad de la Costa", subtitle =
 graf_comb
 
 ggsave(filename = "CiudadCosta_COvsPH.png", plot = graf_comb, device = "png", 
-       path = "salidas/Figuras/Combinadas", width = 250, height = 150, units = "mm", 
+       path = "salidas/Figuras/Comparativas", width = 250, height = 150, units = "mm", 
        dpi = 500, limitsize = TRUE)
+
+#Exportando individualmente
+ggsave(filename = "CC_CatCon_COPH.png", plot = CatCon_COPH, device = "png", 
+       path = "salidas/Figuras/Comparativas", width = 250, height = 150, units = "mm", 
+       dpi = 500, limitsize = TRUE)
+
+ggsave(filename = "CC_Destino_COPH.png", plot = Destino_COPH, device = "png", 
+       path = "salidas/Figuras/Comparativas", width = 300, height = 150, units = "mm", 
+       dpi = 500, limitsize = TRUE)
+ggsave(filename = "CC_Estado_COPH.png", plot = Estado_COPH, device = "png", 
+       path = "salidas/Figuras/Comparativas", width = 300, height = 150, units = "mm", 
+       dpi = 500, limitsize = TRUE)
+
+
+

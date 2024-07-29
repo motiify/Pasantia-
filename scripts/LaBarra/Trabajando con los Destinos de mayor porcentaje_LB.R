@@ -53,53 +53,70 @@ PadUrb_LB <- read.table("datos procesados/Padrones Urbanos_LaBarra.csv",
                         header = TRUE, sep = ",")
 
 # Genero el identificador
-PadUrb_LB$Identificador <- ifelse(PadUrb_LB$Código.Régimen == "PH" | PadUrb_LB$Código.Régimen == "UH",
-                                paste(PadUrb_LB$Código.Departamento, PadUrb_LB$Código.Localidad, PadUrb_LB$Padrón, PadUrb_LB$Unidad, sep = "-"),
-                                paste(PadUrb_LB$Código.Departamento, PadUrb_LB$Código.Localidad, PadUrb_LB$Padrón, sep = "-")
-)
+PadUrb_LB$Identificador <- ifelse((PadUrb_LB$Código.Régimen == "PH" | PadUrb_LB$Código.Régimen == "UH") & PadUrb_LB$Block.Manzana != " ",
+                                  paste(PadUrb_LB$Código.Departamento, PadUrb_LB$Código.Localidad, PadUrb_LB$Padrón, PadUrb_LB$Block.Manzana, PadUrb_LB$Unidad, sep = "-"),
+                                  ifelse((PadUrb_LB$Código.Régimen == "PH" | PadUrb_LB$Código.Régimen == "UH") & PadUrb_LB$Block.Manzana == " ",
+                                         paste(PadUrb_LB$Código.Departamento, PadUrb_LB$Código.Localidad, PadUrb_LB$Padrón, PadUrb_LB$Unidad, sep = "-"),
+                                         paste(PadUrb_LB$Código.Departamento, PadUrb_LB$Código.Localidad, PadUrb_LB$Padrón, sep = "-")))
+PadUrb_LB$Identificador <- gsub("--", "-", PadUrb_LB$Identificador)
 
-
-LB_filt$Identificador <- ifelse(LB_filt$Código.régimen == "PH" | LB_filt$Código.régimen == "UH",
-  paste(LB_filt$Código.departamento, LB_filt$Código.localidad, LB_filt$Padrón, LB_filt$Unidad, sep = "-"),
-  paste(LB_filt$Código.departamento, LB_filt$Código.localidad, LB_filt$Padrón, sep = "-")
-)
-
+LB_filt$Identificador <- ifelse((LB_filt$Código.régimen == "PH" | LB_filt$Código.régimen == "UH") & LB_filt$Bloc...Manzana != " ",
+                                  paste(LB_filt$Código.departamento, LB_filt$Código.localidad, LB_filt$Padrón, LB_filt$Bloc...Manzana, LB_filt$Unidad, sep = "-"),
+                                  ifelse((LB_filt$Código.régimen == "PH" | LB_filt$Código.régimen == "UH") & LB_filt$Bloc...Manzana == " ",
+                                         paste(LB_filt$Código.departamento, LB_filt$Código.localidad, LB_filt$Padrón, LB_filt$Unidad, sep = "-"),
+                                         paste(LB_filt$Código.departamento, LB_filt$Código.localidad, LB_filt$Padrón, sep = "-")))
+LB_filt$Identificador <- gsub("--", "-", LB_filt$Identificador)
 # Filtramos los padrones por destino (en este caso Vivienda y Hotel, Motel)
 PadLine_LB <- semi_join(PadUrb_LB, LB_filt, by = "Identificador") #filtra la capa de padrones
 
 
 # Se presentó alguna vez una DJCU o no?
 PadLine_LB$DeclaraciónJurada <- ifelse(PadLine_LB$`Fecha.última.DJCU` == "/  /", "No", "Si")
-Area_DJCU <- aggregate(Área.edificada ~ DeclaraciónJurada + Código.Régimen , data = PadLine_LB, FUN = sum)
-Area_DJCU$Porcentaje <- (Area_DJCU$Área.edificada*100)/sum(Area_DJCU$Área.edificada)
+DJCU_Presentada <- aggregate(Área.edificada ~ DeclaraciónJurada + Código.Régimen , data = PadLine_LB, FUN = sum)
+DJCU_Presentada$Porcentaje <- (DJCU_Presentada$Área.edificada*100)/sum(DJCU_Presentada$Área.edificada)
 
-DJCU_LB <- ggplot(Area_DJCU, aes(x = DeclaraciónJurada, y = Porcentaje, fill = Código.Régimen)) +
+DJCU_LB <- ggplot(DJCU_Presentada, aes(x = DeclaraciónJurada, y = Porcentaje, fill = Código.Régimen)) +
   geom_bar(stat = "identity", position = "dodge") +
   xlab("Presenta DJCU") + 
   ylab("Porcentaje de DJCU")+
-  labs(title = "La Barra")
+  labs(title = "La Barra", caption = "Padrones con destino Vivienda o Hotel, Motel")
 DJCU_LB
 
-# Tiene DJCU vigente
+# Tiene DJCU vigente, por régimen
 PadLine_LB$Vigencia.última.DJCU <- as.Date(PadLine_LB$Vigencia.última.DJCU, format = "%d/%m/%Y")
 fecha_limite <- as.Date("2024-07-08") 
 PadLine_LB$DJCU_Vigente <- ifelse(PadLine_LB$`Vigencia.última.DJCU` < fecha_limite, "No", "Si")
 PadLine_LB["DJCU_Vigente"][is.na(PadLine_LB["DJCU_Vigente"])] <- "Nunca se presentó DJCU"
-
 DJCU_Vigente_LB <- as.data.frame.table(table(PadLine_LB$DJCU_Vigente, PadLine_LB$Código.Régimen)) # cuenta los casos de Si/No/Nunca se presentó DJCU
 DJCU_Vigente_LB$Porcentaje <- (DJCU_Vigente_LB$Freq*100)/sum(DJCU_Vigente_LB$Freq)
 names(DJCU_Vigente_LB) <- c("Vigencia_DJCU","Régimen", "Cantidad","Porcentaje")
 DJCU_Vigente_LB$Vigencia_DJCU <- factor(DJCU_Vigente_LB$Vigencia_DJCU, levels = c("Si", "No", "Nunca se presentó DJCU"))
 DJCU_Vigente_LB <- DJCU_Vigente_LB[order(DJCU_Vigente_LB$Vigencia_DJCU),]
 
-
 Vigencia_DJCU_LB <- ggplot(DJCU_Vigente_LB, aes(x = Vigencia_DJCU, y = Porcentaje, fill = Régimen)) +
   geom_bar(stat = "identity", position = "dodge") +
   xlab("DJCU vigente") + 
   ylab("Porcentaje de DJCU")+
-  labs(title = "La Barra")
+  labs(title = "La Barra", caption = "Padrones con destino Vivienda o Hotel, Motel")
 
 Vigencia_DJCU_LB
 
 
-Lineas_DJCU <- left_join( PadLine_LB,LB_filt, by = "Identificador", relationship = "many-to-one")
+## Similar a lo anterior, pero dividiendo los que si presentaron DJCU en vigentes o no vigentes  
+DJCU_Presen_Vigen <- as.data.frame.table(table(PadLine_LB$DeclaraciónJurada, PadLine_LB$DJCU_Vigente)) # cuenta los casos de Si (Vigente o no)/No/Nunca se presentó DJCU
+DJCU_Presen_Vigen$Porcentaje <- (DJCU_Presen_Vigen$Freq*100)/sum(DJCU_Presen_Vigen$Freq)
+names(DJCU_Presen_Vigen) <- c("Presenta_DJCU","Vigencia_DJCU", "Cantidad","Porcentaje")
+DJCU_Presen_Vigen$`Presenta_DJCU` <- factor(DJCU_Presen_Vigen$`Presenta_DJCU`, levels = c("Si", "No"))
+DJCU_Presen_Vigen$`Vigencia_DJCU` <- factor(DJCU_Presen_Vigen$`Vigencia_DJCU`, levels = c("Si", "No", "Nunca se presentó DJCU"))
+DJCU_Presen_Vigen <- DJCU_Presen_Vigen[order(DJCU_Presen_Vigen$`Vigencia_DJCU`),]
+
+DJCU_Vigencia_LB <- ggplot(DJCU_Presen_Vigen, aes(x = Presenta_DJCU, y = Porcentaje, fill = Vigencia_DJCU)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  xlab("Presenta DJCU") + 
+  ylab("Porcentaje de DJCU")+
+  labs(title = "La Barra", caption = "Padrones con destino Vivienda o Hotel, Motel")
+DJCU_Vigencia_LB
+
+
+# DJCU por Régimen y por Destino
+Lineas_DJCU <- left_join( PadLine_LB,LB_filt, by = "Identificador")

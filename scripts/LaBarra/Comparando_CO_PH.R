@@ -11,7 +11,6 @@ LaBarra <- read.table("datos procesados/Líneas de construcción_La barra2.csv",
 LaBarra_CO <- LaBarra[LaBarra$Código.régimen == "CO",]
 LaBarra_PH <- LaBarra[LaBarra$Código.régimen == "PH",]
 
-View(LaBarra_PH)
 
 
 # Area construida por categoria de construccion
@@ -21,7 +20,7 @@ LaBarra_CatCon_area_CO$Porcentaje_AreaTotal <- LaBarra_CatCon_area_CO$Area.const
 LaBarra_CatCon_area_CO$Porcentaje_AreaTotal <- LaBarra_CatCon_area_CO$Area.construida/sum(LaBarra_CatCon_area_CO$Area.construida)
 LaBarra_CatCon_area_CO$Porcentaje_AreaTotal <- percent(LaBarra_CatCon_area_CO$Porcentaje_AreaTotal)
 LaBarra_CatCon_area_CO$Categoría.de.construcción <- factor(LaBarra_CatCon_area_CO$Categoría.de.construcción,
-                                                        levels = c("Muy economica","4.5", "Economica","3.5", "Comun","2.5", "Confortable","1.5", "Muy confortable"))
+                                                        levels = c("Muy confortable","1.5","Confortable","2.5","Comun","3.5","Economica","4.5","Muy economica"))
 LaBarra_CatCon_area_CO <- LaBarra_CatCon_area_CO[order(LaBarra_CatCon_area_CO$Categoría.de.construcción),]
 
 
@@ -31,14 +30,13 @@ LaBarra_CatCon_area_PH$Porcentaje_AreaTotal <- LaBarra_CatCon_area_PH$Area.const
 LaBarra_CatCon_area_PH$Porcentaje_AreaTotal <- LaBarra_CatCon_area_PH$Area.construida/sum(LaBarra_CatCon_area_PH$Area.construida)
 LaBarra_CatCon_area_PH$Porcentaje_AreaTotal <- percent(LaBarra_CatCon_area_PH$Porcentaje_AreaTotal)
 LaBarra_CatCon_area_PH$Categoría.de.construcción <- factor(LaBarra_CatCon_area_PH$Categoría.de.construcción,
-                                                           levels = c("Muy economica","4.5", "Economica","3.5", "Comun","2.5", "Confortable","1.5", "Muy confortable"))
+                                                           levels = c("Muy confortable","1.5","Confortable","2.5","Comun","3.5","Economica","4.5","Muy economica"))
 LaBarra_CatCon_area_PH <- LaBarra_CatCon_area_PH[order(LaBarra_CatCon_area_PH$Categoría.de.construcción),]
 
 CatCon_CO_PH <- rbind(LaBarra_CatCon_area_CO,LaBarra_CatCon_area_PH)
 
 CatCon_COPH <- ggplot(CatCon_CO_PH, aes(x = Categoría.de.construcción, y = Area.construida, fill = Regimen)) + 
-  geom_bar(stat = "identity",position = "dodge")+    #crear un gráfico de barras apiladas para múltiples variables
-  geom_bar(stat = "identity")+    #crear un gráfico de barras apiladas para múltiples variables
+  geom_bar(stat = "identity",position = "dodge")+    #crear un gráfico de barras apiladas para múltiples variable
   ylab("Área construida")+
   xlab("Categoría de construcción")
 
@@ -67,7 +65,6 @@ Estado_CO_PH <- rbind(LaBarra_Estado_area_CO,LaBarra_Estado_area_PH)
 
 Estado_COPH <- ggplot(Estado_CO_PH, aes(x = Estado.conservación, y = Area.construida, fill = Regimen)) + 
   geom_bar(stat = "identity",position = "dodge")+    #crear un gráfico de barras apiladas para múltiples variables
-  geom_bar(stat = "identity")+    #crear un gráfico de barras apiladas para múltiples variables
   ylab("Área construida")+
   xlab("Estado de conservación")
 
@@ -90,9 +87,13 @@ Destino_CO_PH_mod <- Destino_CO_PH[Destino_CO_PH$Porcentaje_AreaTotal > 1,]
 
 Destino_COPH <- ggplot(Destino_CO_PH_mod, aes(x = Destinos, y = Area.construida, fill = Regimen)) + 
   geom_bar(stat = "identity",position = "dodge")+    #crear un gráfico de barras apiladas para múltiples variables
-  geom_bar(stat = "identity")+    #crear un gráfico de barras apiladas para múltiples variables
   ylab("Área construida")+
-  xlab("Destino de conservación")
+  xlab("Destino de conservación")+
+  theme(axis.text = element_text(size=5),
+        plot.title = element_text(color = "black",
+                                  hjust = 0.5, 
+                                  size = 14, 
+                                  lineheight = 1.2))
 
 Destino_COPH
 
@@ -119,3 +120,17 @@ graf_comb
 ggsave(filename = "LaBarra_COvsPH.png", plot = graf_comb, device = "png", 
        path = "salidas/Figuras/Combinadas", width = 250, height = 150, units = "mm", 
        dpi = 500, limitsize = TRUE)
+
+#Exportando individualmente
+ggsave(filename = "LB_CatCon_COPH.png", plot = CatCon_COPH, device = "png", 
+       path = "salidas/Figuras/Comparativas", width = 250, height = 150, units = "mm", 
+       dpi = 500, limitsize = TRUE)
+
+ggsave(filename = "LB_Destino_COPH.png", plot = Destino_COPH, device = "png", 
+       path = "salidas/Figuras/Comparativas", width = 300, height = 150, units = "mm", 
+       dpi = 500, limitsize = TRUE)
+ggsave(filename = "LB_Estado_COPH.png", plot = Estado_COPH, device = "png", 
+       path = "salidas/Figuras/Comparativas", width = 300, height = 150, units = "mm", 
+       dpi = 500, limitsize = TRUE)
+
+

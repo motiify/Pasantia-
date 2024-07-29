@@ -11,7 +11,6 @@ library(scales)
 
 # RÉGIMEN
 LaBarra_count_reg <- count(LaBarra, Código.régimen, name = "Freq.CR")
-# View(LaBarra_count_reg)
 total_count_reg <- sum(LaBarra_count_reg$Freq.CR)
 LaBarra_count_reg$prop <- LaBarra_count_reg$Freq.CR / total_count_reg
 

@@ -22,7 +22,12 @@ graf_Dest <- ggplot(LaBarra_Dest_area_mod, aes(x = Destinos, y = Area.construida
   geom_text(aes(label = Porcentaje_AreaTotal), vjust = -0.5,  size = 2) +
   xlab("Destinos") + 
   ylab(bquote("Área construida"~(m^2))) +
-  labs(caption = "Porcentajes > 1% del Área total  /  Área total: 339.868" ~ m^2)
+  labs(caption = "Porcentajes > 1% del Área total  /  Área total: 339.868" ~ m^2)+
+  theme(axis.text = element_text(size=5),
+        plot.title = element_text(color = "black",
+                                  hjust = 0.5, 
+                                  size = 14, 
+                                  lineheight = 1.2))
 
 
 # Area construida por Categoria de construccion
@@ -44,7 +49,12 @@ graf_CatCon <- ggplot(LaBarra_CatCon_area, aes(x = Categoría.de.construcción, 
   xlab("Categoría de construcción") + 
   ylab(bquote("Área construida"~(m^2))) +
   labs(caption = "Área total: 339.868" ~ m^2)+
-  scale_x_discrete(labels = c("Muy confortable","1.5","Confortable","2.5","Comun","3.5","Economica","4.5","Muy economica"))
+  scale_x_discrete(labels = c("Muy confortable","1.5","Confortable","2.5","Comun","3.5","Economica","4.5","Muy economica"))+
+  theme(axis.text = element_text(size=8),
+        plot.title = element_text(color = "black",
+                                  hjust = 0.5, 
+                                  size = 14, 
+                                  lineheight = 1.2))
 
 
 # Area construida por Estado de conservacion
@@ -68,7 +78,12 @@ graf_Estado <- ggplot(LaBarra_Estado_area, aes(x = Estado.conservación, y = Are
   scale_x_discrete(labels = c("Excelente","Excelente/Bueno","Bueno",
                               "Bueno/Regular","Regular","Regular/Malo","Malo",
                               "Malo/Muy Malo" ,"Muy Malo","NA")) +
-  scale_y_continuous(breaks = seq(from = 0, to = 128000, by = 25000))
+  scale_y_continuous(breaks = seq(from = 0, to = 128000, by = 25000))+
+  theme(axis.text = element_text(size=8),
+        plot.title = element_text(color = "black",
+                                  hjust = 0.5, 
+                                  size = 14, 
+                                  lineheight = 1.2))
 
 # Area construida por Régimen
 LaBarra_Reg_area <- aggregate(Area.construida ~ Código.régimen , data = LaBarra, FUN = sum)
@@ -83,7 +98,12 @@ graf_Reg <- ggplot(LaBarra_Reg_area, aes(x = Código.régimen, y = Area.construi
   xlab("Régimen") + 
   ylab(bquote("Área construida"~(m^2))) +
   labs(caption = "Área total: 339.868" ~ m^2)+
-  scale_x_discrete(labels = c("PROP.COMÚN","PROP.HORIZONTAL","URBANIZACIÓN PH"))
+  scale_x_discrete(labels = c("PROP.COMÚN","PROP.HORIZONTAL","URBANIZACIÓN PH"))+
+  theme(axis.text = element_text(size=8),
+        plot.title = element_text(color = "black",
+                                  hjust = 0.5, 
+                                  size = 14, 
+                                  lineheight = 1.2))
 
 
 
@@ -105,3 +125,20 @@ graf_comb
 ggsave(filename = "LaBarra_Area.png", plot = graf_comb, device = "png", 
        path = "salidas/Figuras/Básicas", width = 250, height = 150, units = "mm", 
        dpi = 500, limitsize = TRUE)
+
+#Exportando individualmente
+ggsave(filename = "Regimen_LB_Area.png", plot = graf_Reg, device = "png", 
+       path = "salidas/Figuras/Básicas", width = 250, height = 150, units = "mm", 
+       dpi = 500, limitsize = TRUE)
+
+ggsave(filename = "Categoria_LB_Area.png", plot = graf_CatCon, device = "png", 
+       path = "salidas/Figuras/Básicas", width = 250, height = 150, units = "mm", 
+       dpi = 500, limitsize = TRUE)
+
+ggsave(filename = "Destinos_LB_Area.png", plot = graf_Dest, device = "png", 
+       path = "salidas/Figuras/Básicas", width = 300, height = 150, units = "mm", 
+       dpi = 500, limitsize = TRUE)
+ggsave(filename = "Estado_LB_Area.png", plot = graf_Estado, device = "png", 
+       path = "salidas/Figuras/Básicas", width = 300, height = 150, units = "mm", 
+       dpi = 500, limitsize = TRUE)
+
